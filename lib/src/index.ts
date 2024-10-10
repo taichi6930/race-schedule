@@ -7,6 +7,7 @@ import swaggerUi from 'swagger-ui-express';
 import { container } from 'tsyringe';
 
 import { JraRaceController } from './controller/jraRaceController';
+import { KeirinRaceController } from './controller/keirinRaceController';
 import { NarRaceController } from './controller/narRaceController';
 import swaggerSpec from './swagger/swaggerConfig';
 
@@ -16,6 +17,7 @@ const app: Application = express();
 // DIコンテナからControllerを取得
 const narRaceController = container.resolve(NarRaceController);
 const jraRaceController = container.resolve(JraRaceController);
+const keirinRaceController = container.resolve(KeirinRaceController);
 
 // Expressの設定
 app.use(express.json());
@@ -23,6 +25,7 @@ app.use(express.json());
 // ルーティングの設定
 app.use('/api/races/nar', narRaceController.router);
 app.use('/api/races/jra', jraRaceController.router);
+app.use('/api/races/keirin', keirinRaceController.router);
 
 // Swaggerの設定
 app.use('/api-docs', swaggerUi.serve);

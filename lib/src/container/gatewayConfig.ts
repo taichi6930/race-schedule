@@ -2,21 +2,47 @@ import { container } from 'tsyringe';
 
 import { JraPlaceData } from '../domain/jraPlaceData';
 import { JraRaceData } from '../domain/jraRaceData';
+import { KeirinPlaceData } from '../domain/keirinPlaceData';
 import { NarPlaceData } from '../domain/narPlaceData';
 import { NarRaceData } from '../domain/narRaceData';
 import { JraPlaceDataHtmlGateway } from '../gateway/implement/jraPlaceDataHtmlGateway';
 import { JraRaceDataHtmlGateway } from '../gateway/implement/jraRaceDataHtmlGateway';
+import { KeirinPlaceDataHtmlGateway } from '../gateway/implement/keirinPlaceDataHtmlGateway';
 import { NarPlaceDataHtmlGateway } from '../gateway/implement/narPlaceDataHtmlGateway';
 import { NarRaceDataHtmlGateway } from '../gateway/implement/narRaceDataHtmlGateway';
 import { S3Gateway } from '../gateway/implement/s3Gateway';
 import { IJraPlaceDataHtmlGateway } from '../gateway/interface/iJraPlaceDataHtmlGateway';
 import { IJraRaceDataHtmlGateway } from '../gateway/interface/iJraRaceDataHtmlGateway';
+import { IKeirinPlaceDataHtmlGateway } from '../gateway/interface/iKeirinPlaceDataHtmlGateway';
 import { INarPlaceDataHtmlGateway } from '../gateway/interface/iNarPlaceDataHtmlGateway';
 import { INarRaceDataHtmlGateway } from '../gateway/interface/iNarRaceDataHtmlGateway';
 import { IS3Gateway } from '../gateway/interface/iS3Gateway';
+import { MockKeirinPlaceDataHtmlGateway } from '../gateway/mock/mockKeirinPlaceDataHtmlGateway';
 import { MockS3Gateway } from '../gateway/mock/mockS3Gateway';
 
 // s3Gatewayの実装クラスをDIコンテナに登錄する
+container.register<IS3Gateway<KeirinPlaceData>>('KeirinPlaceS3Gateway', {
+    useFactory: () => {
+        console.log(`KeirinPlaceS3Gateway ${process.env.ENV}`);
+        switch (process.env.ENV) {
+            case 'production':
+                return new S3Gateway<KeirinPlaceData>(
+                    'race-schedule-bucket',
+                    'keirin/place/',
+                );
+            case 'local':
+                return new MockS3Gateway<KeirinPlaceData>(
+                    'race-schedule-bucket',
+                    'keirin/place/',
+                );
+            default:
+                return new MockS3Gateway<KeirinPlaceData>(
+                    'race-schedule-bucket',
+                    'keirin/place/',
+                );
+        }
+    },
+});
 container.register<IS3Gateway<NarRaceData>>('NarRaceS3Gateway', {
     useFactory: () => {
         switch (process.env.ENV) {
@@ -148,6 +174,17 @@ container.register<IJraPlaceDataHtmlGateway>('JraPlaceDataHtmlGateway', {
                 return new JraPlaceDataHtmlGateway();
             default:
                 return new JraPlaceDataHtmlGateway();
+        }
+    },
+});
+
+container.register<IKeirinPlaceDataHtmlGateway>('KeirinPlaceDataHtmlGateway', {
+    useFactory: () => {
+        switch (process.env.ENV) {
+            case 'production':
+                return new KeirinPlaceDataHtmlGateway();
+            default:
+                return new MockKeirinPlaceDataHtmlGateway();
         }
     },
 });

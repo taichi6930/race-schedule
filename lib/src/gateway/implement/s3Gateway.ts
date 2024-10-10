@@ -8,6 +8,7 @@ import * as fs from 'fs';
 import { Readable } from 'stream';
 import { injectable } from 'tsyringe';
 
+import { Logger } from '../../utility/logger';
 import { IS3Gateway } from '../interface/iS3Gateway';
 
 /**
@@ -55,6 +56,7 @@ export class S3Gateway<T extends object> implements IS3Gateway<T> {
      * @param data
      * @param fileName
      */
+    @Logger
     async uploadDataToS3(data: T[], fileName: string): Promise<void> {
         try {
             const csvWriter = createCsvWriter({
@@ -88,6 +90,7 @@ export class S3Gateway<T extends object> implements IS3Gateway<T> {
      * @param fileName
      * @returns
      */
+    @Logger
     async fetchDataFromS3(fileName: string): Promise<string> {
         const params = {
             Bucket: this.bucketName,

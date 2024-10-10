@@ -2,6 +2,7 @@
 import { injectable } from 'tsyringe';
 import { IS3Gateway } from '../interface/iS3Gateway';
 import { format } from 'date-fns';
+import { Logger } from '../../utility/logger';
 
 /**
  * MockS3Gateway
@@ -133,6 +134,7 @@ export class MockS3Gateway<T extends object> implements IS3Gateway<T> {
      * @param data
      * @param fileName
      */
+    @Logger
     async uploadDataToS3(data: T[], fileName: string): Promise<void> {
         try {
             const csvContent = this.convertToCsv(data);
@@ -150,6 +152,7 @@ export class MockS3Gateway<T extends object> implements IS3Gateway<T> {
      * @param fileName
      * @returns
      */
+    @Logger
     async fetchDataFromS3(fileName: string): Promise<string> {
         const key = `${this.folderPath}${fileName}`;
         const data = this.mockStorage.get(key);

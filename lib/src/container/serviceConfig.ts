@@ -44,3 +44,22 @@ container.register<ICalendarService<JraRaceData>>('JraCalendarService', {
         }
     },
 });
+
+container.register<ICalendarService<NarRaceData>>('KeirinCalendarService', {
+    useFactory: () => {
+        switch (process.env.ENV) {
+            case 'production':
+                // ENV が production の場合、GoogleCalendarService を使用
+                return new GoogleCalendarService<NarRaceData>(
+                    'keirin',
+                    process.env.NAR_CALENDAR_ID ?? '',
+                );
+            case 'local':
+                // ENV が local の場合、MockGoogleCalendarService を使用
+                return new MockGoogleCalendarService('keirin');
+            default:
+                // ENV が指定されていない場合も MockGoogleCalendarService を使用
+                return new MockGoogleCalendarService('keirin');
+        }
+    },
+});

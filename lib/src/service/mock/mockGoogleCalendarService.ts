@@ -2,6 +2,7 @@ import { addDays, format } from 'date-fns';
 
 import { CalendarData } from '../../domain/calendarData';
 import { Logger } from '../../utility/logger';
+import { RaceType } from '../implement/googleCalendarService';
 import type { ICalendarService } from '../interface/ICalendarService';
 
 /**
@@ -9,7 +10,7 @@ import type { ICalendarService } from '../interface/ICalendarService';
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class MockGoogleCalendarService implements ICalendarService<any> {
-    constructor(private readonly raceType: 'jra' | 'nar') {}
+    constructor(private readonly raceType: RaceType) {}
 
     @Logger
     getEvents(startDate: Date, finishDate: Date): Promise<CalendarData[]> {
@@ -36,6 +37,10 @@ export class MockGoogleCalendarService implements ICalendarService<any> {
     @Logger
     async upsertEvents(): Promise<void> {
         // モックの動作を記述
+        // console.log('upsertEvents')を出す
+        await Promise.resolve(() => {
+            console.log('upsertEvents');
+        });
     }
 
     @Logger
